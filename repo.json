@@ -4,8 +4,8 @@
   "Tags": ["editorconfig", "utility", "format"],
   "Versions": [
     {
-      "Version": "0.0.1",
-      "Url": "https://github.com/10sr/editorconfig-micro/archive/v0.0.1.zip",
+      "Version": "0.0.2",
+      "Url": "https://github.com/10sr/editorconfig-micro/archive/v0.0.2.zip",
       "Require": {
         "micro": ">=1.1.3"
       }
