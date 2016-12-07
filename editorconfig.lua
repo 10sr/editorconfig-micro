@@ -64,7 +64,7 @@ local function setInsertFinalNewline(properties, view)
     elseif val == "false" then
         setSafely("eofnewline", false, view)
     else
-        logger(("Unknown insert_final_newline: %s"):format(val))
+        logger(("Unknown insert_final_newline: %s"):format(val), view)
     end
 end
 
