@@ -102,6 +102,11 @@ end
 function getApplyProperties(view)
     view = view or CurView()
 
+    if (view.Buf.Path or "") == "" then
+        -- Means that current buffer does not visit any file
+        return
+    end
+
     local fullpath = view.Buf.AbsPath
     if fullpath == nil then
         messenger:Message("editorconfig: AbsPath is empty")
