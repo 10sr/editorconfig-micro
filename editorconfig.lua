@@ -1,3 +1,5 @@
+VERSION = "0.0.3"
+
 local function logger(msg, view)
     messenger:AddLog(("EditorConfig <%s>: %s"):
             format(view.Buf.GetName(view.Buf), msg))
