@@ -10,8 +10,8 @@ For example, download the [EditorConfig C Core][] and follow the instructions in
 the README and INSTALL files to install it.
 
 
-How It Works
-------------
+Usage
+-----
 
 Once installed, this plugin will automatically execute `editorconfig` for
 current files and apply properties when opening buffers for them.
@@ -25,7 +25,7 @@ this command in you `bindings.json`:
 
 ``` json
 {
-    "Alt-e": "editorconfig.editorconfig"
+    "Alt-e": "editorconfig.apply"
 }
 ```
 

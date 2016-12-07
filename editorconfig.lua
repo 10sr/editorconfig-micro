@@ -103,7 +103,7 @@ function getApplyProperties(view)
     view = view or CurView()
 
     if (view.Buf.Path or "") == "" then
-        -- Means that current buffer does not visit any file
+        -- Current buffer does not visit any file
         return
     end
 
@@ -115,7 +115,6 @@ function getApplyProperties(view)
 
     logger(("Running editorconfig %s"):format(fullpath), view)
     JobSpawn("editorconfig", {fullpath}, "", "", "editorconfig.onEditorConfigExit")
-    -- JobStart("editorconfig " .. fullpath, "", "", "editorconfig.onEditorConfigExit")
 end
 
 function onOpenFile(view)
@@ -129,5 +128,5 @@ end
 function onSave(view)
 end
 
-MakeCommand("editorconfig", "editorconfig.getApplyProperties")
+MakeCommand("apply", "editorconfig.getApplyProperties")
 AddRuntimeFile("editorconfig", "help", "help/editorconfig.md")
