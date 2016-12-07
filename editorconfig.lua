@@ -128,5 +128,5 @@ end
 function onSave(view)
 end
 
-MakeCommand("apply", "editorconfig.getApplyProperties")
+MakeCommand("editorconfig", "editorconfig.getApplyProperties")
 AddRuntimeFile("editorconfig", "help", "help/editorconfig.md")
