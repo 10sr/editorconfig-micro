@@ -36,6 +36,7 @@ Supported Properties
 * `charset`
   * Currently micro supports UTF-8 only
 * `trim_trailing_whitespace`
+* `max_line_length`
 
 
 
