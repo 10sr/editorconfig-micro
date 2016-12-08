@@ -25,7 +25,7 @@ this command in you `bindings.json`:
 
 ``` json
 {
-    "Alt-e": "editorconfig.editorconfig"
+    "Alt-e": "editorconfig.getApplyProperties"
 }
 ```
 
