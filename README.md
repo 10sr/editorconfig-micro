@@ -12,7 +12,8 @@ For example, download the [EditorConfig C Core][] and follow the instructions in
 the README and INSTALL files to install it.
 
 Once you installed a core program, this plugin can be (will be able to)
-installed via micro plugin system (CtrlE plugin):
+installed via micro plugin system
+(<kbd>CtrlE</kbd> `plugin install editorconfig` <kbd>Enter</kbd>):
 
     > plugin install editorconfig
 
