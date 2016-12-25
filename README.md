@@ -48,7 +48,7 @@ License
 -------
 
 This software is licensed under MIT License.
-See [LISENCE](LISENCE) for details.
+See [LICENSE](LICENSE) for details.
 
 
 
