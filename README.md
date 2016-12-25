@@ -4,14 +4,17 @@ editorconfig-micro
 [EditorConfig][] Plugin for [micro][] editor
 
 
+Prerequisite
+------------
+
+* [Micro][micro] editor >= 1.1.3
+* An `editorconfig` core executable ([EditorConfig C Core][] for example)
+
+
 Install
 -------
 
-This plugin requires an editorconfig executable be installed.
-For example, download the [EditorConfig C Core][] and follow the instructions in
-the README and INSTALL files to install it.
-
-Once you installed a core program, this plugin can be (will be able to)
+Once you installed a core program, this plugin can be
 installed via micro plugin system:
 
     > plugin install editorconfig
