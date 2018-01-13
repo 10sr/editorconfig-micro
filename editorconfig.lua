@@ -40,7 +40,7 @@ local function setIndentation(properties, view)
         setSafely("tabstospaces", "off", view)
         setSafely("tabsize", tab_width, view)
     else
-        logger(("Unknown indent_style: %s"):format(indent_style or "nil"), view)
+        logger(("Unknown value for editorconfig directive indent_style: %s"):format(indent_style or "nil"), view)
         setSafely("tabsize", indent_size, view)
     end
 end
@@ -51,10 +51,10 @@ local function setCodingSystem(properties, view)
     local end_of_line = properties["end_of_line"]
     local charset = properties["charset"]
     if not (end_of_line == nil or end_of_line == "lf") then
-        msg(("Unsupported end_of_line: %s"):format(end_of_line), view)
+        msg(("Unknown value for editorconfig directive end_of_line: %s"):format(end_of_line), view)
     end
     if not (charset == nil or charset == "utf-8") then
-        msg(("Unsupported charset: %s"):format(charset), view)
+        msg(("Unknown value for editorconfig directive charset: %s"):format(charset), view)
     end
 
 end
@@ -66,7 +66,7 @@ local function setTrimTrailingWhitespace(properties, view)
     elseif val == "false" then
         setSafely("rmtrailingws", false, view)
     else
-        logger(("Unknown trim_trailing_whitespace: %s"):format(val), view)
+        logger(("Unknown value for editorconfig directive trim_trailing_whitespace: %s"):format(val), view)
     end
 end
 
@@ -77,7 +77,7 @@ local function setInsertFinalNewline(properties, view)
     elseif val == "false" then
         setSafely("eofnewline", false, view)
     else
-        logger(("Unknown insert_final_newline: %s"):format(val), view)
+        logger(("Unknown value for editorconfig directive insert_final_newline: %s"):format(val), view)
     end
 end
 
