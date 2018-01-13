@@ -59,6 +59,17 @@ local function setCodingSystem(properties, view)
 
 end
 
+local function setTrimTrailingWhitespace(properties, view)
+    local val = properties["trim_trailing_whitespace"]
+    if val == "true" then
+        setSafely("rmtrailingws", true, view)
+    elseif val == "false" then
+        setSafely("rmtrailingws", false, view)
+    else
+        logger(("Unknown trim_trailing_whitespace: %s"):format(val), view)
+    end
+end
+
 local function setInsertFinalNewline(properties, view)
     local val = properties["insert_final_newline"]
     if val == "true" then
@@ -75,7 +86,7 @@ local function applyProperties(properties, view)
     setCodingSystem(properties, view)
     -- `ruler' is not what we want!
     -- setMaxLineLength(properties, view)
-    -- setTrimTrailingWhitespace(properties, view)
+    setTrimTrailingWhitespace(properties, view)
     setInsertFinalNewline(properties, view)
 end
 
