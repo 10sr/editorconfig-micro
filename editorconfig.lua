@@ -137,6 +137,7 @@ function onViewOpen(view)
 end
 
 function onSave(view)
+    getApplyProperties(view)
 end
 
 MakeCommand("editorconfig", "editorconfig.getApplyProperties")
