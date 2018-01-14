@@ -40,7 +40,7 @@ local function setIndentation(properties, view)
         setSafely("tabstospaces", "off", view)
         setSafely("tabsize", tab_width, view)
     else
-        logger(("Unknown value for editorconfig directive indent_style: %s"):format(indent_style or "nil"), view)
+        logger(("Unknown value for editorconfig property indent_style: %s"):format(indent_style or "nil"), view)
         setSafely("tabsize", indent_size, view)
     end
 end
@@ -53,16 +53,16 @@ local function setEndOfLine(properties, view)
         setSafely("fileformat", "dos", view)
     elseif end_of_line == "cr" then
         -- See https://github.com/zyedidia/micro/blob/master/runtime/help/options.md for supported runtime options.
-        msg(("Value %s for editorconfig directive end_of_line is not currently supported by micro."):format(end_of_line), view)
+        msg(("Value %s for editorconfig property end_of_line is not currently supported by micro."):format(end_of_line), view)
     else
-        msg(("Unknown value for editorconfig directive end_of_line: %s"):format(end_of_line), view)
+        msg(("Unknown value for editorconfig property end_of_line: %s"):format(end_of_line), view)
     end
 end
 
 local function setCharset(properties, view)
     local charset = properties["charset"]
     if charset ~= "utf-8" then
-        msg(("Value %s for editorconfig directive charset is not currently supported by micro."):format(charset), view)
+        msg(("Value %s for editorconfig property charset is not currently supported by micro."):format(charset), view)
     end
 end
 
@@ -73,7 +73,7 @@ local function setTrimTrailingWhitespace(properties, view)
     elseif val == "false" then
         setSafely("rmtrailingws", false, view)
     else
-        logger(("Unknown value for editorconfig directive trim_trailing_whitespace: %s"):format(val), view)
+        logger(("Unknown value for editorconfig property trim_trailing_whitespace: %s"):format(val), view)
     end
 end
 
@@ -84,7 +84,7 @@ local function setInsertFinalNewline(properties, view)
     elseif val == "false" then
         setSafely("eofnewline", false, view)
     else
-        logger(("Unknown value for editorconfig directive insert_final_newline: %s"):format(val), view)
+        logger(("Unknown value for editorconfig property insert_final_newline: %s"):format(val), view)
     end
 end
 
