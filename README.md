@@ -1,12 +1,12 @@
 # editorconfig-micro
 
-[EditorConfig][] Plugin for the [`micro`][] editor
+[EditorConfig] Plugin for the [`micro`] editor
 
 
 ### Prerequisites
 
-* [Micro][micro] editor >= 1.3.2
-* An `editorconfig` core executable (e.g. [EditorConfig C Core][])
+* [`micro`] editor >= 1.3.2
+* An `editorconfig` core executable (e.g. [EditorConfig C Core])
 
 
 ### Installation
@@ -15,7 +15,7 @@ While in micro's command mode (default keybinding: <kbd>CtrlE</kbd>):
 
 `plugin install editorconfig`
 
-That's all! This plugin will be automatically enabled after you restart `micro`.
+That's all! This plugin will be automatically enabled after you restart [`micro`].
 
 
 ### Supported Properties
@@ -25,9 +25,9 @@ That's all! This plugin will be automatically enabled after you restart `micro`.
 * `indent_size`
 * `tab_width`
 * `charset`
-  * Currently, `micro` only supports the UTF-8 charset.
+  * Currently, [`micro`] only [supports][EditorConfig Options] the UTF-8 charset.
 * `end_of_line`
-  * Currently, `micro` supports only LF and CRLF.
+  * Currently, [`micro`] only [supports][EditorConfig Options] LF and CRLF.
 * `insert_final_newline`
 * `trim_trailing_whitespace`
 
@@ -42,6 +42,7 @@ That's all! This plugin will be automatically enabled after you restart `micro`.
 This software is licensed under MIT License.
 See [LICENSE](LICENSE) for details.
 
-[micro]: https://micro-editor.github.io
+[`micro`]: https://micro-editor.github.io
 [EditorConfig]: http://editorconfig.org
+[EditorConfig Options]: https://github.com/zyedidia/micro/blob/master/runtime/help/options.md
 [EditorConfig C Core]: https://github.com/editorconfig/editorconfig-core-c
