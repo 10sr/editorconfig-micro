@@ -1,4 +1,4 @@
-VERSION = "0.1.1"
+VERSION = "0.2.0"
 
 local function logger(msg, view)
     messenger:AddLog(("EditorConfig <%s>: %s"):
@@ -40,23 +40,41 @@ local function setIndentation(properties, view)
         setSafely("tabstospaces", "off", view)
         setSafely("tabsize", tab_width, view)
     else
-        logger(("Unknown indent_style: %s"):format(indent_style or "nil"), view)
+        logger(("Unknown value for editorconfig property indent_style: %s"):format(indent_style or "nil"), view)
         setSafely("tabsize", indent_size, view)
     end
 end
 
-local function setCodingSystem(properties, view)
-    -- Currently micro does not support changing coding-systems
-    -- (Always use utf-8 with LF?)
+local function setEndOfLine(properties, view)
     local end_of_line = properties["end_of_line"]
-    local charset = properties["charset"]
-    if not (end_of_line == nil or end_of_line == "lf") then
-        msg(("Unsupported end_of_line: %s"):format(end_of_line), view)
+    if end_of_line == "lf" then
+        setSafely("fileformat", "unix", view)
+    elseif end_of_line == "crlf" then
+        setSafely("fileformat", "dos", view)
+    elseif end_of_line == "cr" then
+        -- See https://github.com/zyedidia/micro/blob/master/runtime/help/options.md for supported runtime options.
+        msg(("Value %s for editorconfig property end_of_line is not currently supported by micro."):format(end_of_line), view)
+    else
+        msg(("Unknown value for editorconfig property end_of_line: %s"):format(end_of_line), view)
     end
-    if not (charset == nil or charset == "utf-8") then
-        msg(("Unsupported charset: %s"):format(charset), view)
-    end
+end
 
+local function setCharset(properties, view)
+    local charset = properties["charset"]
+    if charset ~= "utf-8" then
+        msg(("Value %s for editorconfig property charset is not currently supported by micro."):format(charset), view)
+    end
+end
+
+local function setTrimTrailingWhitespace(properties, view)
+    local val = properties["trim_trailing_whitespace"]
+    if val == "true" then
+        setSafely("rmtrailingws", true, view)
+    elseif val == "false" then
+        setSafely("rmtrailingws", false, view)
+    else
+        logger(("Unknown value for editorconfig property trim_trailing_whitespace: %s"):format(val), view)
+    end
 end
 
 local function setInsertFinalNewline(properties, view)
@@ -66,16 +84,15 @@ local function setInsertFinalNewline(properties, view)
     elseif val == "false" then
         setSafely("eofnewline", false, view)
     else
-        logger(("Unknown insert_final_newline: %s"):format(val), view)
+        logger(("Unknown value for editorconfig property insert_final_newline: %s"):format(val), view)
     end
 end
 
 local function applyProperties(properties, view)
     setIndentation(properties, view)
-    setCodingSystem(properties, view)
-    -- `ruler' is not what we want!
-    -- setMaxLineLength(properties, view)
-    -- setTrimTrailingWhitespace(properties, view)
+    setEndOfLine(properties, view)
+    setCharset(properties, view)
+    setTrimTrailingWhitespace(properties, view)
     setInsertFinalNewline(properties, view)
 end
 
@@ -126,6 +143,7 @@ function onViewOpen(view)
 end
 
 function onSave(view)
+    getApplyProperties(view)
 end
 
 MakeCommand("editorconfig", "editorconfig.getApplyProperties")
