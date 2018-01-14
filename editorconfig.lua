@@ -45,11 +45,8 @@ local function setIndentation(properties, view)
     end
 end
 
-local function setCodingSystem(properties, view)
-    -- Currently micro does not support changing coding-systems
-    -- (Always use utf-8 with LF?)
+local function setEndOfLine(properties, view)
     local end_of_line = properties["end_of_line"]
-    local charset = properties["charset"]
     if end_of_line == "lf" then
         setSafely("fileformat", "unix", view)
     elseif end_of_line == "crlf" then
@@ -60,10 +57,13 @@ local function setCodingSystem(properties, view)
     else
         msg(("Unknown value for editorconfig directive end_of_line: %s"):format(end_of_line), view)
     end
-    if not (charset == nil or charset == "utf-8") then
-        msg(("Unknown value for editorconfig directive charset: %s"):format(charset), view)
-    end
+end
 
+local function setCharset(properties, view)
+    local charset = properties["charset"]
+    if charset ~= "utf-8" then
+        msg(("Value %s for editorconfig directive charset is not currently supported by micro."):format(charset), view)
+    end
 end
 
 local function setTrimTrailingWhitespace(properties, view)
@@ -90,9 +90,8 @@ end
 
 local function applyProperties(properties, view)
     setIndentation(properties, view)
-    setCodingSystem(properties, view)
-    -- `ruler' is not what we want!
-    -- setMaxLineLength(properties, view)
+    setEndOfLine(properties, view)
+    setCharset(properties, view)
     setTrimTrailingWhitespace(properties, view)
     setInsertFinalNewline(properties, view)
 end
