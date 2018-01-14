@@ -50,7 +50,14 @@ local function setCodingSystem(properties, view)
     -- (Always use utf-8 with LF?)
     local end_of_line = properties["end_of_line"]
     local charset = properties["charset"]
-    if not (end_of_line == nil or end_of_line == "lf") then
+    if end_of_line == "lf" then
+        setSafely("fileformat", "unix", view)
+    elseif end_of_line == "crlf" then
+        setSafely("fileformat", "dos", view)
+    elseif end_of_line == "cr" then
+        -- See https://github.com/zyedidia/micro/blob/master/runtime/help/options.md for supported runtime options.
+        msg(("Value %s for editorconfig directive end_of_line is not currently supported by micro."):format(end_of_line), view)
+    else
         msg(("Unknown value for editorconfig directive end_of_line: %s"):format(end_of_line), view)
     end
     if not (charset == nil or charset == "utf-8") then
