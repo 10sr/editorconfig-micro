@@ -54,14 +54,14 @@ local function setEndOfLine(properties, view)
     elseif end_of_line == "cr" then
         -- See https://github.com/zyedidia/micro/blob/master/runtime/help/options.md for supported runtime options.
         msg(("Value %s for editorconfig property end_of_line is not currently supported by micro."):format(end_of_line), view)
-    else
+    elseif end_of_line ~= nil then
         msg(("Unknown value for editorconfig property end_of_line: %s"):format(end_of_line), view)
     end
 end
 
 local function setCharset(properties, view)
     local charset = properties["charset"]
-    if charset ~= "utf-8" then
+    if charset ~= "utf-8" and charset ~= nil then
         msg(("Value %s for editorconfig property charset is not currently supported by micro."):format(charset), view)
     end
 end
