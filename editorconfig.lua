@@ -1,4 +1,4 @@
-VERSION = "0.2.0"
+VERSION = "0.2.1"
 
 local function logger(msg, view)
     messenger:AddLog(("EditorConfig <%s>: %s"):
