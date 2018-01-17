@@ -14,8 +14,10 @@ local function setSafely(key, value, view)
     if value == nil then
         -- logger(("Ignore nil for %s"):format(key), view)
     else
-        logger(("Set %s = %s"):format(key, value), view)
-        SetLocalOption(key, value, view)
+        if GetOption(key) ~= value then
+            logger(("Set %s = %s"):format(key, value), view)
+            SetLocalOption(key, value, view)
+        end
     end
 end
 
