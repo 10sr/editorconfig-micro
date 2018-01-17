@@ -25,9 +25,9 @@ That's all! This plugin will be automatically enabled after you restart [`micro`
 * `indent_size`
 * `tab_width`
 * `charset`
-  * Currently, [`micro`] only [supports][EditorConfig Options] the UTF-8 charset.
+  * Currently, [`micro`] only [supports][EditorConfig Options] the `utf-8` charset.
 * `end_of_line`
-  * Currently, [`micro`] only [supports][EditorConfig Options] LF and CRLF.
+  * Currently, [`micro`] only [supports][EditorConfig Options] `lf` and `crlf`.
 * `insert_final_newline`
 * `trim_trailing_whitespace`
 
