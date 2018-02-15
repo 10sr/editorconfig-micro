@@ -44,7 +44,9 @@ local function setIndentation(properties, view)
         setSafely("tabstospaces", "off", view)
         setSafely("tabsize", tab_width, view)
     else
-        logger(("Unknown value for editorconfig property indent_style: %s"):format(indent_style or "nil"), view)
+        if indent_style ~= nil then
+            logger(("Unknown value for editorconfig property indent_style: %s"):format(indent_style or "nil"), view)
+        end
         setSafely("tabsize", indent_size, view)
     end
 end
@@ -76,7 +78,7 @@ local function setTrimTrailingWhitespace(properties, view)
         setSafely("rmtrailingws", true, view)
     elseif val == "false" then
         setSafely("rmtrailingws", false, view)
-    else
+    elseif val ~= nil then
         logger(("Unknown value for editorconfig property trim_trailing_whitespace: %s"):format(val), view)
     end
 end
@@ -87,7 +89,7 @@ local function setInsertFinalNewline(properties, view)
         setSafely("eofnewline", true, view)
     elseif val == "false" then
         setSafely("eofnewline", false, view)
-    else
+    elseif val ~= nil then
         logger(("Unknown value for editorconfig property insert_final_newline: %s"):format(val), view)
     end
 end
