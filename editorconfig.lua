@@ -1,5 +1,7 @@
 VERSION = "0.2.1"
 
+local verbose = GetOption("editorconfigverbose") or false
+
 local function logger(msg, view)
     messenger:AddLog(("EditorConfig <%s>: %s"):
             format(view.Buf.GetName(view.Buf), msg))
@@ -100,7 +102,9 @@ end
 
 function onEditorConfigExit(output)
     local view = CurView()
-    logger(("Output: \n%s"):format(output), view)
+    if verbose then
+        logger(("Output: \n%s"):format(output), view)
+    end
     local properties = {}
     for line in output:gmatch('([^\n]+)') do
         local key, value = line:match('([^=]*)=(.*)')
@@ -115,7 +119,9 @@ function onEditorConfigExit(output)
     end
 
     applyProperties(properties, view)
-    logger("Running editorconfig done", view)
+    if verbose then
+        logger("Running editorconfig done", view)
+    end
 end
 
 function getApplyProperties(view)
@@ -132,7 +138,9 @@ function getApplyProperties(view)
         return
     end
 
-    logger(("Running editorconfig %s"):format(fullpath), view)
+    if verbose then
+        logger(("Running editorconfig %s"):format(fullpath), view)
+    end
     JobSpawn("editorconfig", {fullpath}, "", "", "editorconfig.onEditorConfigExit")
 end
 
