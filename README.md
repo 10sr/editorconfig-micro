@@ -1,6 +1,6 @@
 # editorconfig-micro
 
-[EditorConfig] Plugin for the [`micro`] editor
+[EditorConfig] plugin for the [`micro`] editor.
 
 
 ### Prerequisites
@@ -15,7 +15,9 @@ While in micro's command mode (default keybinding: <kbd>CtrlE</kbd>):
 
 `plugin install editorconfig`
 
-That's all! This plugin will be automatically enabled after you restart [`micro`].
+That's all! This plugin will be automatically enabled after you restart [`micro`]. It will automatically apply the appropriate editorconfig properties on files when they are opened or saved.
+
+For more information, use `help editorconfig` in command mode or view `help/editorconfig.md` in this repo.
 
 
 ### Supported Properties
