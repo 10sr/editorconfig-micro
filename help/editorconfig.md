@@ -13,22 +13,21 @@ the README and INSTALL files to install it.
 Usage
 -----
 
-Once installed, this plugin will automatically execute `editorconfig` for
-current files and apply properties when opening buffers for them. `editorconfig`
-will also be executed upon every file save.
+Once installed, this plugin will automatically execute `editorconfig.getApplyProperties`
+on files when they are opened or saved.
 
-This plugin also provides one command: `editorconfig`.
-You can use this command to explicitly apply properties after updating
-`.editorconfig` files.
+You can also explicitly use the `editorconfig` command in command mode, or bind it to
+a keystroke. For example:
 
-By default there are no keybindings for this command, but you can bind a key to
-this command in your `bindings.json`. For example:
-
-``` json
+```json
 {
     "Alt-e": "editorconfig.getApplyProperties"
 }
 ```
+
+If any editorconfig properties have been changed, they will be logged, which can be viewed
+with `log` in command mode.
+
 
 [EditorConfig]: http://editorconfig.org
 [EditorConfig C Core]: https://github.com/editorconfig/editorconfig-core-c
