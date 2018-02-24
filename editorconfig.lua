@@ -31,6 +31,7 @@ local function setIndentation(properties, view)
 
     local indent_size = tonumber(indent_size_str, 10)
     local tab_width = tonumber(tab_width_str, 10)
+
     if indent_size_str == "tab" then
         indent_size = tab_width
     elseif tab_width == nil then
@@ -43,11 +44,8 @@ local function setIndentation(properties, view)
     elseif indent_style == "tab" then
         setSafely("tabstospaces", "off", view)
         setSafely("tabsize", tab_width, view)
-    else
-        if indent_style ~= nil then
-            logger(("Unknown value for editorconfig property indent_style: %s"):format(indent_style or "nil"), view)
-        end
-        setSafely("tabsize", indent_size, view)
+    elseif indent_style ~= nil then
+        logger(("Unknown value for editorconfig property indent_style: %s"):format(indent_style or "nil"), view)
     end
 end
 
