@@ -26,7 +26,7 @@ a keystroke. For example:
 ```
 
 If any editorconfig properties have been changed, they will be logged, which can be viewed
-with `log` in command mode.
+with `log` in command mode. If you want to see verbose logs, you must manually add `"editorconfigverbose": true,` to your user settings in `~/.config/micro/settings.json`.
 
 
 [EditorConfig]: http://editorconfig.org
