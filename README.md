@@ -1,19 +1,16 @@
 # editorconfig-micro
 
-[EditorConfig] plugin for the [`micro`] editor.
+[EditorConfig] plugin for the [`micro`] editor. Works with `micro` v2.
 
 
 ### Prerequisites
 
-* [`micro`] editor >= 1.3.2
-* An `editorconfig` core executable (e.g. [EditorConfig C Core])
+You'll need an `editorconfig` core executable, like [EditorConfig C Core], installed and on your PATH.
 
 
 ### Installation
 
-While in micro's command mode (default keybinding: <kbd>CtrlE</kbd>):
-
-`plugin install editorconfig`
+    git clone https://github.com/10sr/editorconfig-micro "${XDG_CONFIG_HOME:-~/.config}/micro/plug/editorconfig-micro"
 
 That's all! This plugin will be automatically enabled after you restart [`micro`]. It will automatically apply the appropriate editorconfig properties on files when they are opened or saved.
 
