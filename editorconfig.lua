@@ -7,9 +7,7 @@ local shell = import("micro/shell")
 -- TODO: s/view/bp or bufpane for readability
 -- can probably just unwrap to buf = bp.Buf in high level callers, dont need other bp api
 
--- TODO: upstream needs to add support for reading settings.json
--- local verbose = GetOption("editorconfigverbose") or false
-local verbose = false
+local verbose = config.GetGlobalOption("editorconfigverbose") or false
 
 local function logger(msg, view)
     messenger:AddLog(("EditorConfig <%s>: %s"):
@@ -25,8 +23,7 @@ local function setSafely(key, value, view)
     if value == nil then
         -- logger(("Ignore nil for %s"):format(key), view)
     else
-        -- TODO: upstream needs to add support for reading settings.json
-        if GetOption(key) ~= value then
+        if config.GetGlobalOption(key) ~= value then
             logger(("Set %s = %s"):format(key, value), view)
             -- ...is this right?
             view.Buf.SetOption(key, value, view)
