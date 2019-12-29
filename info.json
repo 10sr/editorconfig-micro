@@ -1,0 +1,10 @@
+{
+    "name": "editorconfig",
+    "description": "EditorConfig plugin for the micro editor.",
+    "website": "https://github.com/10sr/editorconfig-micro",
+    "install": "https://github.com/10sr/editorconfig-micro/blob/master/README.md",
+    "version": "1.0.0-alpha",
+    "require": [
+        "micro>=2.0.0,<3.0.0"
+    ]
+}
