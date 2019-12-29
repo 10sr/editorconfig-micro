@@ -6,16 +6,15 @@ local shell = import("micro/shell")
 
 local verbose = config.GetGlobalOption("editorconfigverbose") or false
 
--- TODO: verify
 local function logger(msg, buffer)
-    messenger:AddLog(("EditorConfig <%s>: %s"):
-            format(buffer.GetName(), msg))
+-- XXX: micro.Log will log to a debug file which doesn't exist unless you compile with debug support. It isn't the log buffer. Currently, 2.0 plugins can't write to the log buffer.
+    micro.Log(("EditorConfig <%s>: %s"):
+            format(buffer:GetName(), msg))
 end
 
--- TODO: verify
 local function msg(msg, buffer)
-    messenger:Message(("EditorConfig <%s>: %s"):
-            format(buffer.GetName(), msg))
+    micro.InfoBar():Message(("EditorConfig <%s>: %s"):
+            format(buffer:GetName(), msg))
 end
 
 local function setSafely(key, value, buffer)
@@ -24,12 +23,11 @@ local function setSafely(key, value, buffer)
     else
         if config.GetGlobalOption(key) ~= value then
             logger(("Set %s = %s"):format(key, value), buffer)
-            -- ...is this right? i'm seeting b:SetOption.
-            buffer.SetOption(key, value)
+            -- TODO: things like tabstospaces seem to have changed from bools to str
+            buffer:SetOption(key, value)
         end
     end
 end
-
 
 local function setIndentation(properties, buffer)
     local indent_size_str = properties["indent_size"]
