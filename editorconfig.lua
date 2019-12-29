@@ -4,35 +4,34 @@ local micro = import("micro")
 local config = import("micro/config")
 local shell = import("micro/shell")
 
--- TODO: s/view/bp or bufpane for readability
--- can probably just unwrap to buf = bp.Buf in high level callers, dont need other bp api
-
 local verbose = config.GetGlobalOption("editorconfigverbose") or false
 
-local function logger(msg, view)
+-- TODO: verify
+local function logger(msg, buffer)
     messenger:AddLog(("EditorConfig <%s>: %s"):
-            format(view.Buf.GetName(view.Buf), msg))
+            format(buffer.GetName(), msg))
 end
 
-local function msg(msg, view)
+-- TODO: verify
+local function msg(msg, buffer)
     messenger:Message(("EditorConfig <%s>: %s"):
-            format(view.Buf.GetName(view.Buf), msg))
+            format(buffer.GetName(), msg))
 end
 
-local function setSafely(key, value, view)
+local function setSafely(key, value, buffer)
     if value == nil then
-        -- logger(("Ignore nil for %s"):format(key), view)
+        -- logger(("Ignore nil for %s"):format(key), buffer)
     else
         if config.GetGlobalOption(key) ~= value then
-            logger(("Set %s = %s"):format(key, value), view)
-            -- ...is this right?
-            view.Buf.SetOption(key, value, view)
+            logger(("Set %s = %s"):format(key, value), buffer)
+            -- ...is this right? i'm seeting b:SetOption.
+            buffer.SetOption(key, value)
         end
     end
 end
 
 
-local function setIndentation(properties, view)
+local function setIndentation(properties, buffer)
     local indent_size_str = properties["indent_size"]
     local tab_width_str = properties["tab_width"]
     local indent_style = properties["indent_style"]
@@ -47,78 +46,79 @@ local function setIndentation(properties, view)
     end
 
     if indent_style == "space" then
-        setSafely("tabstospaces", true, view)
-        setSafely("tabsize", indent_size, view)
+        setSafely("tabstospaces", true, buffer)
+        setSafely("tabsize", indent_size, buffer)
     elseif indent_style == "tab" then
-        setSafely("tabstospaces", false, view)
-        setSafely("tabsize", tab_width, view)
+        setSafely("tabstospaces", false, buffer)
+        setSafely("tabsize", tab_width, buffer)
     elseif indent_style ~= nil then
-        logger(("Unknown value for editorconfig property indent_style: %s"):format(indent_style or "nil"), view)
+        logger(("Unknown value for editorconfig property indent_style: %s"):format(indent_style or "nil"), buffer)
     end
 end
 
-local function setEndOfLine(properties, view)
+local function setEndOfLine(properties, buffer)
     local end_of_line = properties["end_of_line"]
     if end_of_line == "lf" then
-        setSafely("fileformat", "unix", view)
+        setSafely("fileformat", "unix", buffer)
     elseif end_of_line == "crlf" then
-        setSafely("fileformat", "dos", view)
+        setSafely("fileformat", "dos", buffer)
     elseif end_of_line == "cr" then
         -- See https://github.com/zyedidia/micro/blob/master/runtime/help/options.md for supported runtime options.
-        msg(("Value %s for editorconfig property end_of_line is not currently supported by micro."):format(end_of_line), view)
+        msg(("Value %s for editorconfig property end_of_line is not currently supported by micro."):format(end_of_line), buffer)
     elseif end_of_line ~= nil then
-        msg(("Unknown value for editorconfig property end_of_line: %s"):format(end_of_line), view)
+        msg(("Unknown value for editorconfig property end_of_line: %s"):format(end_of_line), buffer)
     end
 end
 
-local function setCharset(properties, view)
+local function setCharset(properties, buffer)
     local charset = properties["charset"]
     if charset ~= "utf-8" and charset ~= nil then
-        msg(("Value %s for editorconfig property charset is not currently supported by micro."):format(charset), view)
+        msg(("Value %s for editorconfig property charset is not currently supported by micro."):format(charset), buffer)
     end
 end
 
-local function setTrimTrailingWhitespace(properties, view)
+local function setTrimTrailingWhitespace(properties, buffer)
     local val = properties["trim_trailing_whitespace"]
     if val == "true" then
-        setSafely("rmtrailingws", true, view)
+        setSafely("rmtrailingws", true, buffer)
     elseif val == "false" then
-        setSafely("rmtrailingws", false, view)
+        setSafely("rmtrailingws", false, buffer)
     elseif val ~= nil then
-        logger(("Unknown value for editorconfig property trim_trailing_whitespace: %s"):format(val), view)
+        logger(("Unknown value for editorconfig property trim_trailing_whitespace: %s"):format(val), buffer)
     end
 end
 
-local function setInsertFinalNewline(properties, view)
+local function setInsertFinalNewline(properties, buffer)
     local val = properties["insert_final_newline"]
     if val == "true" then
-        setSafely("eofnewline", true, view)
+        setSafely("eofnewline", true, buffer)
     elseif val == "false" then
-        setSafely("eofnewline", false, view)
+        setSafely("eofnewline", false, buffer)
     elseif val ~= nil then
-        logger(("Unknown value for editorconfig property insert_final_newline: %s"):format(val), view)
+        logger(("Unknown value for editorconfig property insert_final_newline: %s"):format(val), buffer)
     end
 end
 
-local function applyProperties(properties, view)
-    setIndentation(properties, view)
-    setEndOfLine(properties, view)
-    setCharset(properties, view)
-    setTrimTrailingWhitespace(properties, view)
-    setInsertFinalNewline(properties, view)
+local function applyProperties(properties, buffer)
+    setIndentation(properties, buffer)
+    setEndOfLine(properties, buffer)
+    setCharset(properties, buffer)
+    setTrimTrailingWhitespace(properties, buffer)
+    setInsertFinalNewline(properties, buffer)
 end
 
 function onEditorConfigExit(output, args)
-    local view = args[1]
+    local buffer = args[1]
     if verbose then
-        logger(("Output: \n%s"):format(output), view)
+        logger(("Output: \n%s"):format(output), buffer)
     end
+
     local properties = {}
     for line in output:gmatch('([^\n]+)') do
         local key, value = line:match('([^=]*)=(.*)')
         if key == nil or value == nil then
             msg(("Failed to parse editorconfig output: %s"):
-                    format(line), view)
+                    format(line), buffer)
             return
         end
         key = key:gsub('^%s(.-)%s*$', '%1')
@@ -126,31 +126,30 @@ function onEditorConfigExit(output, args)
         properties[key] = value
     end
 
-    applyProperties(properties, view)
+    applyProperties(properties, buffer)
     if verbose then
-        logger("Running editorconfig done", view)
+        logger("Running editorconfig done", buffer)
     end
 end
 
-function getApplyProperties(view)
-    view = view or CurView()
-
-    if (view.Buf.Path or "") == "" then
+function getApplyProperties(bufpane)
+    buffer = bufpane.Buf
+    if (buffer.Path or "") == "" then
         -- Current buffer does not visit any file
         return
     end
 
-    local fullpath = view.Buf.AbsPath
+    local fullpath = buffer.AbsPath
     if fullpath == nil then
         messenger:Message("editorconfig: AbsPath is empty")
         return
     end
 
     if verbose then;
-        -- TODO: needs porting
-        logger(("Running editorconfig %s"):format(fullpath), view)
+        logger(("Running editorconfig %s"):format(fullpath), buffer)
     end
-    shell.JobSpawn("editorconfig", {fullpath}, "", "", "editorconfig.onEditorConfigExit", view)
+
+    shell.JobSpawn("editorconfig", {fullpath}, "", "", "editorconfig.onEditorConfigExit", buffer)
 end
 
 function onOpenFile(bp)
