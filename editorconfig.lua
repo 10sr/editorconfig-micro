@@ -164,5 +164,4 @@ function onSave(bp)
 end
 
 config.MakeCommand("editorconfig", "editorconfig.getApplyProperties", config.NoComplete)
--- TODO: needs porting
--- config.AddRuntimeFile("editorconfig", "help", "help/editorconfig.md")
+config.AddRuntimeFile("editorconfig", config.RTHelp, "help/editorconfig.md")
