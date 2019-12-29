@@ -1,6 +1,15 @@
 VERSION = "0.2.3"
 
-local verbose = GetOption("editorconfigverbose") or false
+local micro = import("micro")
+local config = import("micro/config")
+local shell = import("micro/shell")
+
+-- TODO: s/view/bp or bufpane for readability
+-- can probably just unwrap to buf = bp.Buf in high level callers, dont need other bp api
+
+-- TODO: upstream needs to add support for reading settings.json
+-- local verbose = GetOption("editorconfigverbose") or false
+local verbose = false
 
 local function logger(msg, view)
     messenger:AddLog(("EditorConfig <%s>: %s"):
@@ -16,9 +25,11 @@ local function setSafely(key, value, view)
     if value == nil then
         -- logger(("Ignore nil for %s"):format(key), view)
     else
+        -- TODO: upstream needs to add support for reading settings.json
         if GetOption(key) ~= value then
             logger(("Set %s = %s"):format(key, value), view)
-            SetLocalOption(key, value, view)
+            -- ...is this right?
+            view.Buf.SetOption(key, value, view)
         end
     end
 end
@@ -100,8 +111,8 @@ local function applyProperties(properties, view)
     setInsertFinalNewline(properties, view)
 end
 
-function onEditorConfigExit(output)
-    local view = CurView()
+function onEditorConfigExit(output, args)
+    local view = args[1]
     if verbose then
         logger(("Output: \n%s"):format(output), view)
     end
@@ -138,23 +149,26 @@ function getApplyProperties(view)
         return
     end
 
-    if verbose then
+    if verbose then;
+        -- TODO: needs porting
         logger(("Running editorconfig %s"):format(fullpath), view)
     end
-    JobSpawn("editorconfig", {fullpath}, "", "", "editorconfig.onEditorConfigExit")
+    shell.JobSpawn("editorconfig", {fullpath}, "", "", "editorconfig.onEditorConfigExit", view)
 end
 
-function onOpenFile(view)
-    getApplyProperties(view)
+function onOpenFile(bp)
+    getApplyProperties(bp)
 end
 
-function onViewOpen(view)
-    getApplyProperties(view)
+function onViewOpen(bp)
+    getApplyProperties(bp)
 end
 
-function onSave(view)
-    getApplyProperties(view)
+function onSave(bp)
+    getApplyProperties(bp)
+    return false
 end
 
-MakeCommand("editorconfig", "editorconfig.getApplyProperties")
-AddRuntimeFile("editorconfig", "help", "help/editorconfig.md")
+config.MakeCommand("editorconfig", "editorconfig.getApplyProperties", config.NoComplete)
+-- TODO: needs porting
+-- config.AddRuntimeFile("editorconfig", "help", "help/editorconfig.md")
