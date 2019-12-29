@@ -159,7 +159,7 @@ end
 
 function onSave(bp)
     getApplyProperties(bp)
-    return false
+    return true
 end
 
 config.MakeCommand("editorconfig", "editorconfig.getApplyProperties", config.NoComplete)
