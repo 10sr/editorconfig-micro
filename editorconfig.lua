@@ -23,8 +23,7 @@ local function setSafely(key, value, buffer)
     else
         if config.GetGlobalOption(key) ~= value then
             logger(("Set %s = %s"):format(key, value), buffer)
-            -- TODO: things like tabstospaces seem to have changed from bools to str
-            buffer:SetOption(key, value)
+            buffer:SetOptionNative(key, value)
         end
     end
 end
