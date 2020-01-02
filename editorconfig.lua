@@ -147,11 +147,7 @@ function getApplyProperties(bufpane)
     shell.JobSpawn("editorconfig", {fullpath}, "", "", "editorconfig.onEditorConfigExit", buffer)
 end
 
-function onOpenFile(bp)
-    getApplyProperties(bp)
-end
-
-function onViewOpen(bp)
+function onBufPaneOpen(bp)
     getApplyProperties(bp)
 end
 
