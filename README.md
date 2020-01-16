@@ -5,7 +5,7 @@
 
 ### Prerequisites
 
-* [`micro`] editor >= 1.3.2
+* 1.3.2 <= [`micro`] editor < 2.0.0
 * An `editorconfig` core executable (e.g. [EditorConfig C Core])
 
 
