@@ -1,24 +1,26 @@
 local micro = import("micro")
+local microBuffer = import("micro/buffer")
 local config = import("micro/config")
 local shell = import("micro/shell")
 
 local verbose = config.GetGlobalOption("editorconfigverbose") or false
 
-local function logger(msg)
--- XXX: micro.Log will log to a debug file which doesn't exist unless you compile with debug support. It isn't the log buffer. Currently, 2.0 plugins can't write to the log buffer.
-    micro.Log(("editorconfig: %s"):format(msg))
+local function errlog(msg)
+    -- TODO: automatically open the log buffer like plugin list
+    microBuffer.Log(("editorconfig error: %s\n"):format(msg))
 end
 
-local function msg(msg)
-    micro.InfoBar():Message(("editorconfig: %s"):format(msg))
+-- for debugging; use micro -debug, and then inspect log.txt
+local function log(msg)
+    micro.Log(("editorconfig debug: %s"):format(msg))
 end
 
 local function setSafely(key, value, buffer)
     if value == nil then
-        -- logger(("Ignore nil for %s"):format(key))
+        -- log(("Ignore nil for %s"):format(key))
     else
         if config.GetGlobalOption(key) ~= value then
-            logger(("Set %s = %s"):format(key, value))
+            log(("Set %s = %s"):format(key, value))
             buffer:SetOptionNative(key, value)
         end
     end
@@ -45,7 +47,7 @@ local function setIndentation(properties, buffer)
         setSafely("tabstospaces", false, buffer)
         setSafely("tabsize", tab_width, buffer)
     elseif indent_style ~= nil then
-        logger(("Unknown value for editorconfig property indent_style: %s"):format(indent_style or "nil"))
+        errlog(("Unknown value for editorconfig property indent_style: %s"):format(indent_style or "nil"))
     end
 end
 
@@ -57,9 +59,9 @@ local function setEndOfLine(properties, buffer)
         setSafely("fileformat", "dos", buffer)
     elseif end_of_line == "cr" then
         -- See https://github.com/zyedidia/micro/blob/master/runtime/help/options.md for supported runtime options.
-        msg(("Value %s for editorconfig property end_of_line is not currently supported by micro."):format(end_of_line))
+        errlog(("Value %s for editorconfig property end_of_line is not currently supported by micro."):format(end_of_line))
     elseif end_of_line ~= nil then
-        msg(("Unknown value for editorconfig property end_of_line: %s"):format(end_of_line))
+        errlog(("Unknown value for editorconfig property end_of_line: %s"):format(end_of_line))
     end
 end
 
@@ -68,7 +70,7 @@ local function setCharset(properties, buffer)
     if charset ~= "utf-8" and charset ~= nil then
         -- TODO: I believe micro 2.0 added support for more charsets, so this is gonna have to be updated accordingly.
         -- Also now we need to actually set the charset since it isn't just utf-8.
-        msg(("Value %s for editorconfig property charset is not currently supported by micro."):format(charset))
+        errlog(("Value %s for editorconfig property charset is not currently supported by micro."):format(charset))
     end
 end
 
@@ -79,7 +81,7 @@ local function setTrimTrailingWhitespace(properties, buffer)
     elseif val == "false" then
         setSafely("rmtrailingws", false, buffer)
     elseif val ~= nil then
-        logger(("Unknown value for editorconfig property trim_trailing_whitespace: %s"):format(val))
+        errlog(("Unknown value for editorconfig property trim_trailing_whitespace: %s"):format(val))
     end
 end
 
@@ -90,7 +92,7 @@ local function setInsertFinalNewline(properties, buffer)
     elseif val == "false" then
         setSafely("eofnewline", false, buffer)
     elseif val ~= nil then
-        logger(("Unknown value for editorconfig property insert_final_newline: %s"):format(val))
+        errlog(("Unknown value for editorconfig property insert_final_newline: %s"):format(val))
     end
 end
 
@@ -104,14 +106,14 @@ end
 
 function onEditorConfigExit(output, args)
     if verbose then
-        logger(("Output: \n%s"):format(output))
+        log(("Output: \n%s"):format(output))
     end
 
     local properties = {}
     for line in output:gmatch('([^\n]+)') do
         local key, value = line:match('([^=]*)=(.*)')
         if key == nil or value == nil then
-            msg(("Failed to parse editorconfig output: %s"):format(line))
+            errlog(("Failed to parse editorconfig output: %s"):format(line))
             return
         end
         key = key:gsub('^%s(.-)%s*$', '%1')
@@ -123,7 +125,7 @@ function onEditorConfigExit(output, args)
     applyProperties(properties, buffer)
 
     if verbose then
-        logger("Running editorconfig done")
+        log("Running editorconfig done")
     end
 end
 
@@ -141,7 +143,7 @@ function getApplyProperties(bufpane)
     end
 
     if verbose then;
-        logger(("Running editorconfig %s"):format(fullpath))
+        log(("Running editorconfig %s"):format(fullpath))
     end
 
     shell.JobSpawn("editorconfig", {fullpath}, "", "", "editorconfig.onEditorConfigExit", buffer)
