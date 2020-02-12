@@ -1,3 +1,5 @@
+VERSION = "0.3.0"
+
 local micro = import("micro")
 local microBuffer = import("micro/buffer")
 local config = import("micro/config")
@@ -146,7 +148,7 @@ function getApplyProperties(bufpane)
         log(("Running editorconfig %s"):format(fullpath))
     end
 
-    shell.JobSpawn("editorconfig", {fullpath}, "", "", "editorconfig.onEditorConfigExit", buffer)
+    shell.JobSpawn("editorconfig", {fullpath}, nil, nil, onEditorConfigExit, buffer)
 end
 
 function onBufPaneOpen(bp)
@@ -158,5 +160,7 @@ function onSave(bp)
     return true
 end
 
-config.MakeCommand("editorconfig", "editorconfig.getApplyProperties", config.NoComplete)
-config.AddRuntimeFile("editorconfig", config.RTHelp, "help/editorconfig.md")
+function init()
+    config.MakeCommand("editorconfig", getApplyProperties, config.NoComplete)
+    config.AddRuntimeFile("editorconfig", config.RTHelp, "help/editorconfig.md")
+end
