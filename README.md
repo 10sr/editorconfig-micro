@@ -10,7 +10,11 @@ You'll need an `editorconfig` core executable, like [EditorConfig C Core], insta
 
 ### Installation
 
-    git clone https://github.com/10sr/editorconfig-micro "${XDG_CONFIG_HOME:-~/.config}/micro/plug/editorconfig-micro"
+From the command line, type `micro -plugin install editorconfig`. Or, in micro's command mode, type `plugin install editorconfig`.
+
+Alternatively, you may directly clone this repository:
+
+    git clone https://github.com/10sr/editorconfig-micro "${XDG_CONFIG_HOME:-~/.config}/micro/plug/editorconfig"
 
 That's all! This plugin will be automatically enabled after you restart [`micro`]. It will automatically apply the appropriate editorconfig properties on files when they are opened or saved.
 
