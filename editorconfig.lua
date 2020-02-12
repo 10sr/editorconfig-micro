@@ -1,4 +1,4 @@
-VERSION = "0.3.0"
+VERSION = "1.0.0"
 
 local micro = import("micro")
 local microBuffer = import("micro/buffer")
