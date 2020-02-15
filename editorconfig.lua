@@ -7,9 +7,9 @@ local shell = import("micro/shell")
 
 local verbose = config.GetGlobalOption("editorconfigverbose") or false
 
-local function errlog(msg)
-    -- TODO: automatically open the log buffer like plugin list
+local function errlog(msg, bufpane)
     microBuffer.Log(("editorconfig error: %s\n"):format(msg))
+    bufpane:OpenLogBuf()
 end
 
 -- for debugging; use micro -debug, and then inspect log.txt
@@ -17,10 +17,11 @@ local function log(msg)
     micro.Log(("editorconfig debug: %s"):format(msg))
 end
 
-local function setSafely(key, value, buffer)
+local function setSafely(key, value, bufpane)
     if value == nil then
         -- log(("Ignore nil for %s"):format(key))
     else
+        buffer = bufpane.Buf
         if config.GetGlobalOption(key) ~= value then
             log(("Set %s = %s"):format(key, value))
             buffer:SetOptionNative(key, value)
@@ -28,7 +29,7 @@ local function setSafely(key, value, buffer)
     end
 end
 
-local function setIndentation(properties, buffer)
+local function setIndentation(properties, bufpane)
     local indent_size_str = properties["indent_size"]
     local tab_width_str = properties["tab_width"]
     local indent_style = properties["indent_style"]
@@ -43,67 +44,67 @@ local function setIndentation(properties, buffer)
     end
 
     if indent_style == "space" then
-        setSafely("tabstospaces", true, buffer)
-        setSafely("tabsize", indent_size, buffer)
+        setSafely("tabstospaces", true, bufpane)
+        setSafely("tabsize", indent_size, bufpane)
     elseif indent_style == "tab" then
-        setSafely("tabstospaces", false, buffer)
-        setSafely("tabsize", tab_width, buffer)
+        setSafely("tabstospaces", false, bufpane)
+        setSafely("tabsize", tab_width, bufpane)
     elseif indent_style ~= nil then
-        errlog(("Unknown value for editorconfig property indent_style: %s"):format(indent_style or "nil"))
+        errlog(("Unknown value for editorconfig property indent_style: %s"):format(indent_style or "nil"), bufpane)
     end
 end
 
-local function setEndOfLine(properties, buffer)
+local function setEndOfLine(properties, bufpane)
     local end_of_line = properties["end_of_line"]
     if end_of_line == "lf" then
-        setSafely("fileformat", "unix", buffer)
+        setSafely("fileformat", "unix", bufpane)
     elseif end_of_line == "crlf" then
-        setSafely("fileformat", "dos", buffer)
+        setSafely("fileformat", "dos", bufpane)
     elseif end_of_line == "cr" then
         -- See https://github.com/zyedidia/micro/blob/master/runtime/help/options.md for supported runtime options.
-        errlog(("Value %s for editorconfig property end_of_line is not currently supported by micro."):format(end_of_line))
+        errlog(("Value %s for editorconfig property end_of_line is not currently supported by micro."):format(end_of_line), bufpane)
     elseif end_of_line ~= nil then
-        errlog(("Unknown value for editorconfig property end_of_line: %s"):format(end_of_line))
+        errlog(("Unknown value for editorconfig property end_of_line: %s"):format(end_of_line), bufpane)
     end
 end
 
-local function setCharset(properties, buffer)
+local function setCharset(properties, bufpane)
     local charset = properties["charset"]
     if charset ~= "utf-8" and charset ~= nil then
         -- TODO: I believe micro 2.0 added support for more charsets, so this is gonna have to be updated accordingly.
         -- Also now we need to actually set the charset since it isn't just utf-8.
-        errlog(("Value %s for editorconfig property charset is not currently supported by micro."):format(charset))
+        errlog(("Value %s for editorconfig property charset is not currently supported by micro."):format(charset), bufpane)
     end
 end
 
-local function setTrimTrailingWhitespace(properties, buffer)
+local function setTrimTrailingWhitespace(properties, bufpane)
     local val = properties["trim_trailing_whitespace"]
     if val == "true" then
-        setSafely("rmtrailingws", true, buffer)
+        setSafely("rmtrailingws", true, bufpane)
     elseif val == "false" then
-        setSafely("rmtrailingws", false, buffer)
+        setSafely("rmtrailingws", false, bufpane)
     elseif val ~= nil then
-        errlog(("Unknown value for editorconfig property trim_trailing_whitespace: %s"):format(val))
+        errlog(("Unknown value for editorconfig property trim_trailing_whitespace: %s"):format(val), bufpane)
     end
 end
 
-local function setInsertFinalNewline(properties, buffer)
+local function setInsertFinalNewline(properties, bufpane)
     local val = properties["insert_final_newline"]
     if val == "true" then
-        setSafely("eofnewline", true, buffer)
+        setSafely("eofnewline", true, bufpane)
     elseif val == "false" then
-        setSafely("eofnewline", false, buffer)
+        setSafely("eofnewline", false, bufpane)
     elseif val ~= nil then
-        errlog(("Unknown value for editorconfig property insert_final_newline: %s"):format(val))
+        errlog(("Unknown value for editorconfig property insert_final_newline: %s"):format(val), bufpane)
     end
 end
 
-local function applyProperties(properties, buffer)
-    setIndentation(properties, buffer)
-    setEndOfLine(properties, buffer)
-    setCharset(properties, buffer)
-    setTrimTrailingWhitespace(properties, buffer)
-    setInsertFinalNewline(properties, buffer)
+local function applyProperties(properties, bufpane)
+    setIndentation(properties, bufpane)
+    setEndOfLine(properties, bufpane)
+    setCharset(properties, bufpane)
+    setTrimTrailingWhitespace(properties, bufpane)
+    setInsertFinalNewline(properties, bufpane)
 end
 
 function onEditorConfigExit(output, args)
@@ -123,8 +124,8 @@ function onEditorConfigExit(output, args)
         properties[key] = value
     end
 
-    local buffer = args[1]
-    applyProperties(properties, buffer)
+    local bufpane = args[1]
+    applyProperties(properties, bufpane)
 
     if verbose then
         log("Running editorconfig done")
@@ -132,13 +133,12 @@ function onEditorConfigExit(output, args)
 end
 
 function getApplyProperties(bufpane)
-    buffer = bufpane.Buf
-    if (buffer.Path or "") == "" then
+    if (bufpane.Buf.Path or "") == "" then
         -- Current buffer does not visit any file
         return
     end
 
-    local fullpath = buffer.AbsPath
+    local fullpath = bufpane.Buf.AbsPath
     if fullpath == nil then
         messenger:Message("editorconfig: AbsPath is empty")
         return
@@ -148,15 +148,15 @@ function getApplyProperties(bufpane)
         log(("Running editorconfig %s"):format(fullpath))
     end
 
-    shell.JobSpawn("editorconfig", {fullpath}, nil, nil, onEditorConfigExit, buffer)
+    shell.JobSpawn("editorconfig", {fullpath}, nil, nil, onEditorConfigExit, bufpane)
 end
 
-function onBufPaneOpen(bp)
-    getApplyProperties(bp)
+function onBufPaneOpen(bufpane)
+    getApplyProperties(bufpane)
 end
 
-function onSave(bp)
-    getApplyProperties(bp)
+function onSave(bufpane)
+    getApplyProperties(bufpane)
     return true
 end
 
