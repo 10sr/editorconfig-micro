@@ -5,8 +5,6 @@ local microBuffer = import("micro/buffer")
 local config = import("micro/config")
 local shell = import("micro/shell")
 
-local verbose = config.GetGlobalOption("editorconfigverbose") or false
-
 local function errlog(msg, bufpane)
     microBuffer.Log(("editorconfig error: %s\n"):format(msg))
     bufpane:OpenLogBuf()
@@ -14,12 +12,12 @@ end
 
 -- for debugging; use micro -debug, and then inspect log.txt
 local function log(msg)
-    micro.Log(("editorconfig debug: %s"):format(msg))
+    micro.Log(("editorconfig log: %s"):format(msg))
 end
 
 local function setSafely(key, value, bufpane)
     if value == nil then
-        -- log(("Ignore nil for %s"):format(key))
+        log(("Ignore nil for %s"):format(key))
     else
         buffer = bufpane.Buf
         if config.GetGlobalOption(key) ~= value then
@@ -108,10 +106,7 @@ local function applyProperties(properties, bufpane)
 end
 
 function onEditorConfigExit(output, args)
-    if verbose then
-        log(("Output: \n%s"):format(output))
-    end
-
+    log(("editorconfig core output: \n%s"):format(output))
     local properties = {}
     for line in output:gmatch('([^\n]+)') do
         local key, value = line:match('([^=]*)=(.*)')
@@ -126,10 +121,7 @@ function onEditorConfigExit(output, args)
 
     local bufpane = args[1]
     applyProperties(properties, bufpane)
-
-    if verbose then
-        log("Running editorconfig done")
-    end
+    log("Done.")
 end
 
 function getApplyProperties(bufpane)
@@ -144,10 +136,7 @@ function getApplyProperties(bufpane)
         return
     end
 
-    if verbose then;
-        log(("Running editorconfig %s"):format(fullpath))
-    end
-
+    log(("Running on file %s"):format(fullpath))
     shell.JobSpawn("editorconfig", {fullpath}, nil, nil, onEditorConfigExit, bufpane)
 end
 
