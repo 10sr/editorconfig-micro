@@ -153,6 +153,5 @@ function onSave(bufpane)
 end
 
 function init()
-    config.MakeCommand("editorconfig", getApplyProperties, config.NoComplete)
     config.AddRuntimeFile("editorconfig", config.RTHelp, "help/editorconfig.md")
 end
