@@ -16,7 +16,7 @@ Alternatively, you may directly clone this repository:
 
     git clone https://github.com/10sr/editorconfig-micro "${XDG_CONFIG_HOME:-~/.config}/micro/plug/editorconfig"
 
-That's all! This plugin will be automatically enabled after you restart [`micro`]. It will automatically apply the appropriate editorconfig properties on files when they are opened or saved.
+That's all! This plugin will be automatically enabled after you restart [`micro`]. It will automatically apply the appropriate editorconfig properties on files when they are opened and saved.
 
 It's also recommended to disable micro's `ftoptions` builtin plugin (set it to false in micro's settings.json) as it's a very limited subset of duplicate functionality than what editorconfig provides.
 
