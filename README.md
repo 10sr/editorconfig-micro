@@ -18,6 +18,8 @@ Alternatively, you may directly clone this repository:
 
 That's all! This plugin will be automatically enabled after you restart [`micro`]. It will automatically apply the appropriate editorconfig properties on files when they are opened or saved.
 
+It's also recommended to disable micro's `ftoptions` builtin plugin (set it to false in micro's settings.json) as it's a very limited subset of duplicate functionality than what editorconfig provides.
+
 For more information, use `help editorconfig` in command mode or view `help/editorconfig.md` in this repo.
 
 
