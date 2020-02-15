@@ -8,7 +8,7 @@
       "Version": "1.0.0",
       "Url": "https://github.com/10sr/editorconfig-micro/archive/v1.0.0.zip",
       "Require": {
-        "micro": ">=2.0.0"
+        "micro": ">=2.0.1"
       }
     },
     {
