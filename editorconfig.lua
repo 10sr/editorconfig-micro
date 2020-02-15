@@ -20,9 +20,12 @@ local function setSafely(key, value, bufpane)
         log(("Ignore nil for %s"):format(key))
     else
         buffer = bufpane.Buf
-        if config.GetGlobalOption(key) ~= value then
-            log(("Set %s = %s"):format(key, value))
+        local oldValue = config.GetGlobalOption(key)
+        if oldValue ~= value then
+            log(("Set %s = %s (was %s)"):format(key, value, oldValue))
             buffer:SetOptionNative(key, value)
+        else
+            log(("Unchanged %s = %s"):format(key, oldValue))
         end
     end
 end
