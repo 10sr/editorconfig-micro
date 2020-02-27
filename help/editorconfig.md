@@ -1,33 +1,22 @@
-editorconfig-micro
-==================
+editorconfig
+============
 
-[EditorConfig][] helps developers define and maintain
+http://editorconfig.org helps developers define and maintain
 consistent coding styles between different editors and IDEs.
 This is the EditorConfig plugin for the `micro` editor.
 
 This plugin requires an editorconfig core executable to be installed.
-For example, download the [EditorConfig C Core][] and follow the instructions in
-the README and INSTALL files to install it.
+https://github.com/editorconfig/editorconfig-core-c
 
 
 Usage
 -----
 
-Once installed, this plugin will automatically execute `editorconfig.getApplyProperties`
-on files when they are opened or saved.
+Once installed, this plugin will automatically use the editorconfig core to
+obtain the desired editorconfig properties based on the file, and apply the
+corresponding micro options on both open (necessary for things like tabstospaces)
+and save (necessary for things like rmtrailingws).
 
-You can also explicitly use the `editorconfig` command in command mode, or bind it to
-a keystroke. For example:
-
-```json
-{
-    "Alt-e": "editorconfig.getApplyProperties"
-}
-```
-
-If any editorconfig properties have been changed, they will be logged, which can be viewed
-with `log` in command mode. If you want to see verbose logs, you must manually add `"editorconfigverbose": true,` to your user settings in `~/.config/micro/settings.json`.
-
-
-[EditorConfig]: http://editorconfig.org
-[EditorConfig C Core]: https://github.com/editorconfig/editorconfig-core-c
+If any micro options have been changed as a result of editorconfig configuration,
+they will be logged to micro's debug log. You may view them by running micro in
+debug mode (`micro -debug`) and then subsequently inspecting `log.txt`.
