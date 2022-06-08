@@ -111,7 +111,7 @@ end
 function onEditorConfigExit(output, args)
     log(("editorconfig core output: \n%s"):format(output))
     local properties = {}
-    for line in output:gmatch('([^\n]+)') do
+    for line in output:gmatch('([^\r?\n]+)') do
         local key, value = line:match('([^=]*)=(.*)')
         if key == nil or value == nil then
             errlog(("Failed to parse editorconfig output: %s"):format(line))
