@@ -1,4 +1,4 @@
-VERSION = "1.0.0"
+VERSION = "1.1.0"
 
 local micro = import("micro")
 local microBuffer = import("micro/buffer")
@@ -155,3 +155,7 @@ end
 function init()
     config.AddRuntimeFile("editorconfig", config.RTHelp, "help/editorconfig.md")
 end
+
+-- outside init because we want these options to take effect before
+-- buffers are initialized
+config.AddRuntimeFile("editorconfig", config.RTSyntax, "syntax/editorconfig.yaml")

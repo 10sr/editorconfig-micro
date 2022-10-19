@@ -1,0 +1,21 @@
+filetype: editorconfig
+
+detect:
+    filename: ".?editor-?config(?:config|-conf)?$"
+
+rules:
+    # Supported Properties
+    - statement: "\\b(indent_style|indent_size|tab_width|end_of_line|charset|trim_trailing_whitespace|insert_final_newline|root)\\b"
+    # Values
+    - special: "=\\s?.+"
+    # Files
+    - identifier: "^[[:space:]]*\\[.*\\]$"
+    # Brackets
+    - brightwhite: "\\[|]|{|}|,|="
+    # Wildcard Patterns
+    - statement: "\\*|!|\\?"
+
+    - comment:
+        start: "#"
+        end: "$"
+        rules: []
