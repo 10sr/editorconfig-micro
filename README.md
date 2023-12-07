@@ -2,6 +2,7 @@
 
 [EditorConfig] plugin for the [`micro`] editor. Works with `micro` v2.
 
+![Syntax Highlight](https://raw.githubusercontent.com/10sr/editorconfig-micro/master/assets/syntax_highlight.png)
 
 ### Prerequisites
 
