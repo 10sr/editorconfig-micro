@@ -1,3 +1,10 @@
+# Maintainer Needed
+
+I usually do not use the Micro editor now, and I don't have the time to maintain this project any more.
+Forking and replacing this repository is really appreciated. Thanks!
+
+
+
 # editorconfig-micro
 
 [EditorConfig] plugin for the [`micro`] editor. Works with `micro` v2.
